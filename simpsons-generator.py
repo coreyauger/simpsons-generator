@@ -135,9 +135,9 @@ def train(epochs=2000,batch=64):
     running_a_acc = 0
     for i in range(epochs):
         real_imgs = np.reshape(data[np.random.choice(data.shape[0], batch,replace=False)],(batch,img_w,img_h,img_channels))
-        print("real_imgs "+str(real_imgs.shape))
+        #print("real_imgs "+str(real_imgs.shape))
         fake_imgs = generator.predict(np.random.uniform(-1.0, 1.0, size=[batch, 100]))
-        print("fake_imgs "+str(fake_imgs.shape))
+        #print("fake_imgs "+str(fake_imgs.shape))
         x = np.concatenate((real_imgs,fake_imgs))
         y = np.ones([2*batch,1])
         y[batch:,:] = 0
