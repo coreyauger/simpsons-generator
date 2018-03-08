@@ -38,7 +38,8 @@ def create_nparray_from_data():
     return data
 
 #np.save("./data/data.npy",create_nparray_from_data())
-data = np.load("./data/data-small.npy")
+#data = np.load("./data/data-small.npy")
+data = np.load("./data/data.npy")
 print(data.shape)
 
 img_test = data[ int(np.random.random() * data.shape[0]),:,:,: ] 
@@ -155,22 +156,26 @@ def train(epochs=2000,batch=64):
         
         if (i+1)%10 == 0:
             print('Epoch #{}'.format(i+1))
-        if (i+1)%1000 == 0:
+        if (i+1)%250 == 0:
             print('Epoch #{}'.format(i+1))
             log_mesg = "%d: [D loss: %f, acc: %f]" % (i, running_d_loss/i, running_d_acc/i)
             log_mesg = "%s  [A loss: %f, acc: %f]" % (log_mesg, running_a_loss/i, running_a_acc/i)
             print(log_mesg)
             noise = np.random.uniform(-1.0, 1.0, size=[16, 100])
             gen_imgs = generator.predict(noise)
-            plt.figure(figsize=(5,5))
+            print("gen_imgs: "+ str(gen_imgs.shape) )
+            plt.figure()
             for k in range(gen_imgs.shape[0]):
                 plt.subplot(4, 4, k+1)
-                plt.imshow(gen_imgs[k, :, :, 0], cmap='gray')
+                plt.imshow(gen_imgs[k, :, :, :])
                 plt.axis('off')
             plt.tight_layout()
             plt.show()
-            plt.savefig('./images/camel_{}.png'.format(i+1))
+            plt.savefig('./images/simpsons_{}.png'.format(i+1))
+        if (i+1)%1000 == 0:
+            AM.save("./data/model_{}.h5".format(i+1))
+            print("Saved model..")
     return a_loss, d_loss
         
-a_loss, d_loss = train(epochs=6000)
+a_loss, d_loss = train(epochs=60000)
 
