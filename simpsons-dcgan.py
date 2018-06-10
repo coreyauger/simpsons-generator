@@ -235,6 +235,15 @@ def view_samples(epoch, samples, nrows, ncols, figsize=(5,5)):
     return fig, axes
 
 
+# FIXME : ...
+def batches(data, batch_size):
+        n_batches = data.shape[0]//batch_size
+        for ii in range(0, data.shape[0], batch_size):
+            x = data[ii:ii+batch_size]
+            y = self.train_y[ii:ii+batch_size]
+            
+            yield self.scaler(x), y
+
 
 def train(net, dataset, epochs, batch_size, print_every=10, show_every=100, figsize=(5,5)):
     saver = tf.train.Saver()
@@ -246,7 +255,7 @@ def train(net, dataset, epochs, batch_size, print_every=10, show_every=100, figs
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         for e in range(epochs):
-            for x, y in dataset.batches(batch_size):
+            for x, y in batches(data, batch_size):
                 steps += 1
 
                 # Sample random noise for G
@@ -295,9 +304,7 @@ beta1 = 0.5
 net = GAN(real_size, z_size, learning_rate, alpha=alpha, beta1=beta1)
 
 
-dataset = Dataset(trainset, testset)
-
-losses, samples = train(net, dataset, epochs, batch_size, figsize=(10,5))
+losses, samples = train(net, data, epochs, batch_size, figsize=(10,5))
 
 
 fig, ax = plt.subplots()
