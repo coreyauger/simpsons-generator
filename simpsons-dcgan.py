@@ -236,16 +236,25 @@ def view_samples(epoch, samples, nrows, ncols, figsize=(5,5)):
 
 
 # FIXME : ...
+def scale(x, feature_range=(-1, 1)):
+    # scale to (0, 1)
+    x = ((x - x.min())/(255 - x.min()))
+    
+    # scale to feature_range
+    min, max = feature_range
+    x = x * (max - min) + min
+    return x
+
 def batches(data, batch_size):
         n_batches = data.shape[0]//batch_size
         for ii in range(0, data.shape[0], batch_size):
             x = data[ii:ii+batch_size]
-            y = self.train_y[ii:ii+batch_size]
+            y = [1] * batch_size
             
-            yield self.scaler(x), y
+            yield scale(x), y
 
 
-def train(net, dataset, epochs, batch_size, print_every=10, show_every=100, figsize=(5,5)):
+def train(net, dataset, epochs, batch_size, print_every=10, show_every=1000, figsize=(5,5)):
     saver = tf.train.Saver()
     sample_z = np.random.uniform(-1, 1, size=(72, z_size))
 
@@ -293,10 +302,10 @@ def train(net, dataset, epochs, batch_size, print_every=10, show_every=100, figs
 
 
 real_size = (64,64,3)
-z_size = 100
+z_size = 4*4*1024
 learning_rate = 0.0002
 batch_size = 128
-epochs = 25
+epochs = 500
 alpha = 0.2
 beta1 = 0.5
 
