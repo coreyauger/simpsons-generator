@@ -271,7 +271,8 @@ def train(net, dataset, epochs, batch_size, print_every=10, show_every=1000, fig
                 batch_z = np.random.uniform(-1, 1, size=(batch_size, z_size))
 
                 # Run optimizers
-                _ = sess.run(net.d_opt, feed_dict={net.input_real: x, net.input_z: batch_z})
+                if steps % 3 == 1:
+                    _ = sess.run(net.d_opt, feed_dict={net.input_real: x, net.input_z: batch_z})
                 _ = sess.run(net.g_opt, feed_dict={net.input_z: batch_z, net.input_real: x})
 
                 if steps % print_every == 0:
